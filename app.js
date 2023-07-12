@@ -7,8 +7,11 @@ input.addEventListener("keydown", function(event){
     addItem();
 })
 
+window.onload = () => {
+    showItems();
+};
 
-function addItem() {
+function createBox(taskValue) {
 
     let divParent = document.createElement("div")
     let divChild = document.createElement("div")
@@ -16,7 +19,7 @@ function addItem() {
     let trashIcon = document.createElement("i")
 
     divParent.className = "item";
-    divParent.innerHTML = "<div>"+input.value+"</div>";
+    divParent.innerHTML = "<div>"+taskValue+"</div>";
 
     checkIcon.className = "fas fa-check-square";
     checkIcon.style.color = "lightgray";
@@ -48,6 +51,20 @@ function addItem() {
     divParent.appendChild(divChild);
 
     toDoItems.appendChild(divParent);
+}
+
+function showItems (){
+
+    const itemList = JSON.parse(localStorage.getItem("tasks"));
+    
+    for (const property in itemList) {
+        createBox(property);
+    }
+}
+
+function addItem() {
+
+    createBox(input.value);
 
     let store = JSON.parse(localStorage.getItem("tasks"));
     store = { ...store, [input.value]: input.value };
