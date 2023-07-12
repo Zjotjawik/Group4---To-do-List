@@ -37,8 +37,8 @@ function createBox(taskValue, uniqueId) {
     editIcon.addEventListener("click", function() {
         input.value = divParent.innerText;
         const taskId = divParent.id;
-        const tasksInStore = JSON.parse(localStorage.getItem("tasks"));
-        delete tasksInStore[taskId]; 
+        let tasksInStore = JSON.parse(localStorage.getItem("tasks"));
+        tasksInStore = tasksInStore.filter(element => element.id != taskId);
         localStorage.setItem("tasks", JSON.stringify(tasksInStore));
         divParent.remove();
     })
@@ -48,13 +48,9 @@ function createBox(taskValue, uniqueId) {
     trashIcon.className = "fas fa-trash";
     trashIcon.style.color = "darkgray";
     trashIcon.addEventListener("click", function() {
-        //we get the name of the task that user wants to delete
         const taskId = divParent.id;
-        //we get all the tasks that are currently in the local storage and convert it to an object
-        const tasksInStore = JSON.parse(localStorage.getItem("tasks"));
-        //now deleting the property from the object
-        delete tasksInStore[taskId]; 
-        //now adding the modified list of tasks to local storage
+        let tasksInStore = JSON.parse(localStorage.getItem("tasks"));
+        tasksInStore = tasksInStore.filter(element => element.id != taskId);
         localStorage.setItem("tasks", JSON.stringify(tasksInStore));
         divParent.remove();
     })
@@ -68,10 +64,9 @@ function createBox(taskValue, uniqueId) {
 
 function showItems() {
     const itemList = JSON.parse(localStorage.getItem("tasks"));
-    const itemKeysList = Object.keys(itemList);
-    
-    for (let index = 0; index < itemKeysList.length; index++) {
-        createBox(itemList[itemKeysList[index]], itemKeysList[index])
+
+    for (let index = 0; index < itemList.length; index++) {
+        createBox(itemList[index].content, itemList[index].id, itemList[index].status)
     }
 }
 
@@ -81,13 +76,18 @@ function addItem() {
     createBox(input.value, uniqueId);
 
     let store = JSON.parse(localStorage.getItem("tasks"));
-    store = { ...store, [uniqueId]: input.value };
-    // TODO tasks would become an array and this array would colect objects
-    // Each object would be as follows {
-        // id: uniqueId
-        // content: input.value 
-        // status: true
-    // }
+    console.log(store);
+    if(store == null){
+        store = []
+    }
+    store = [
+        ...store,
+        {
+            id: uniqueId,
+            content: input.value, 
+            status: true
+        }
+    ]
     localStorage.setItem("tasks", JSON.stringify(store));
 
     input.value = ''
