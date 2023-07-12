@@ -29,6 +29,20 @@ function createBox(taskValue) {
         divParent.style = "text-decoration: line-through";
     })
 
+    
+    editIcon.className = "fa-regular fa-pen-to-square"
+    editIcon.style.color = "darkgray";
+    divChild.appendChild(editIcon);
+    editIcon.addEventListener("click", function() {
+        divParent.innerText = input.value;
+        divParent.appendChild(divChild)
+        divChild.appendChild(editIcon);
+        divChild.appendChild(checkIcon);
+        divChild.appendChild(trashIcon);
+        
+            
+    })
+
     divChild.appendChild(checkIcon);
 
     trashIcon.className = "fas fa-trash";
@@ -73,17 +87,5 @@ function addItem() {
     localStorage.setItem("tasks", JSON.stringify(store));
 
     input.value = ''
-
-    editIcon.className = "fa-regular fa-pen-to-square"
-    editIcon.style.color = "darkgray";
-    divChild.appendChild(editIcon);
-    editIcon.addEventListener("click", function() {
-        divParent.innerText = input.value;
-        divParent.appendChild(divChild)
-        divChild.appendChild(checkIcon);
-        divChild.appendChild(trashIcon);
-        divChild.appendChild(editIcon);
-            
-    })
 }
 
