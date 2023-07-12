@@ -11,7 +11,7 @@ window.onload = () => {
     showItems();
 };
 
-function createBox(taskValue, uniqueId) {
+function createBox(taskValue, uniqueId, status = true) {
 
     let divParent = document.createElement("div")
     let divChild = document.createElement("div")
@@ -24,10 +24,24 @@ function createBox(taskValue, uniqueId) {
     divParent.innerHTML = "<div>"+taskValue+"</div>";
 
     checkIcon.className = "fas fa-check-square";
-    checkIcon.style.color = "lightgray";
-    checkIcon.addEventListener("click", function() {
-        checkIcon.style.color = "limegreen";
+    if(status == true){
+        checkIcon.style.color = "lightgray";
+    }else{
+        checkIcon.style.color = "limegreen"
         divParent.style = "text-decoration: line-through";
+    }
+    checkIcon.addEventListener("click", function() {
+        if(status == true){
+            checkIcon.style.color = "limegreen";
+            divParent.style = "text-decoration: line-through";
+            status = false
+            changeStatus(divParent.id, taskValue, false)
+        }else if(status == false){
+            checkIcon.style.color = "lightgray";
+            divParent.style = "text-decoration: none";
+            status = true
+            changeStatus(divParent.id, taskValue, true)
+        }
     })
 
     
@@ -76,7 +90,6 @@ function addItem() {
     createBox(input.value, uniqueId);
 
     let store = JSON.parse(localStorage.getItem("tasks"));
-    console.log(store);
     if(store == null){
         store = []
     }
@@ -93,3 +106,16 @@ function addItem() {
     input.value = ''
 }
 
+const changeStatus = (id, content, status) => {
+    let store = JSON.parse(localStorage.getItem("tasks"));
+    store = store.filter(element => element.id != id);
+    store = [
+        ...store,
+        {
+            id: id,
+            content: content, 
+            status: status
+        }
+    ]
+    localStorage.setItem("tasks", JSON.stringify(store));
+}
