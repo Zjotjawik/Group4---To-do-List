@@ -17,6 +17,7 @@ function createBox(taskValue) {
     let divChild = document.createElement("div")
     let checkIcon = document.createElement("i")
     let trashIcon = document.createElement("i")
+    let editIcon = document.createElement("i")
 
     divParent.className = "item";
     divParent.innerHTML = "<div>"+taskValue+"</div>";
@@ -73,6 +74,16 @@ function addItem() {
 
     input.value = ''
 
-
+    editIcon.className = "fa-regular fa-pen-to-square"
+    editIcon.style.color = "darkgray";
+    divChild.appendChild(editIcon);
+    editIcon.addEventListener("click", function() {
+        divParent.innerText = input.value;
+        divParent.appendChild(divChild)
+        divChild.appendChild(checkIcon);
+        divChild.appendChild(trashIcon);
+        divChild.appendChild(editIcon);
+            
+    })
 }
 
