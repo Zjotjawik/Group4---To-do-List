@@ -11,7 +11,7 @@ window.onload = () => {
     showItems();
 };
 
-function createBox(taskValue) {
+function createBox(taskValue, uniqueId) {
 
     let divParent = document.createElement("div")
     let divChild = document.createElement("div")
@@ -20,6 +20,7 @@ function createBox(taskValue) {
     let editIcon = document.createElement("i")
 
     divParent.className = "item";
+    divParent.id = uniqueId;
     divParent.innerHTML = "<div>"+taskValue+"</div>";
 
     checkIcon.className = "fas fa-check-square";
@@ -34,13 +35,12 @@ function createBox(taskValue) {
     editIcon.style.color = "darkgray";
     divChild.appendChild(editIcon);
     editIcon.addEventListener("click", function() {
-        divParent.innerText = input.value;
-        divParent.appendChild(divChild)
-        divChild.appendChild(editIcon);
-        divChild.appendChild(checkIcon);
-        divChild.appendChild(trashIcon);
-        
-            
+        input.value = divParent.innerText;
+        const taskId = divParent.id;
+        const tasksInStore = JSON.parse(localStorage.getItem("tasks"));
+        delete tasksInStore[taskId]; 
+        localStorage.setItem("tasks", JSON.stringify(tasksInStore));
+        divParent.remove();
     })
 
     divChild.appendChild(checkIcon);
@@ -49,17 +49,14 @@ function createBox(taskValue) {
     trashIcon.style.color = "darkgray";
     trashIcon.addEventListener("click", function() {
         //we get the name of the task that user wants to delete
-        const taskName = divParent.innerText.toLowerCase();
+        const taskId = divParent.id;
         //we get all the tasks that are currently in the local storage and convert it to an object
         const tasksInStore = JSON.parse(localStorage.getItem("tasks"));
         //now deleting the property from the object
-        delete tasksInStore[taskName]; 
-        //deleting everything from local storage
-        localStorage.clear();
+        delete tasksInStore[taskId]; 
         //now adding the modified list of tasks to local storage
         localStorage.setItem("tasks", JSON.stringify(tasksInStore));
         divParent.remove();
-
     })
 
     divChild.appendChild(trashIcon);
@@ -69,21 +66,28 @@ function createBox(taskValue) {
     toDoItems.appendChild(divParent);
 }
 
-function showItems (){
-
+function showItems() {
     const itemList = JSON.parse(localStorage.getItem("tasks"));
+    const itemKeysList = Object.keys(itemList);
     
-    for (const property in itemList) {
-        createBox(property);
+    for (let index = 0; index < itemKeysList.length; index++) {
+        createBox(itemList[itemKeysList[index]], itemKeysList[index])
     }
 }
 
 function addItem() {
+    let uniqueId = "todo_"+new Date().valueOf()
 
-    createBox(input.value);
+    createBox(input.value, uniqueId);
 
     let store = JSON.parse(localStorage.getItem("tasks"));
-    store = { ...store, [input.value]: input.value };
+    store = { ...store, [uniqueId]: input.value };
+    // TODO tasks would become an array and this array would colect objects
+    // Each object would be as follows {
+        // id: uniqueId
+        // content: input.value 
+        // status: true
+    // }
     localStorage.setItem("tasks", JSON.stringify(store));
 
     input.value = ''
