@@ -25,6 +25,7 @@ function createBox(taskValue) {
     checkIcon.style.color = "lightgray";
     checkIcon.addEventListener("click", function() {
         checkIcon.style.color = "limegreen";
+        divParent.style = "text-decoration: line-through";
     })
 
     divChild.appendChild(checkIcon);
